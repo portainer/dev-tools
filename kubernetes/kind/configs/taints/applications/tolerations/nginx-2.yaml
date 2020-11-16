@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tol-2
+  labels:
+    app: nginx-tol-2
+spec:
+  selector:
+    matchLabels:
+      app: nginx-tol-2
+  template:
+    metadata:
+      labels:
+        app: nginx-tol-2
+    spec:
+      tolerations:
+        - key: hello # match value match effect
+          operator: Equal
+          value: world
+          effect: NoExecute
+      containers:
+      - name: nginx-tol-2
+        image: nginx:latest

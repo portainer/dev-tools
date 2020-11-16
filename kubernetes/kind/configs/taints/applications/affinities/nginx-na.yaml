@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-na
+  labels:
+    app: nginx-na
+spec:
+  selector:
+    matchLabels:
+      app: nginx-na
+  template:
+    metadata:
+      labels:
+        app: nginx-na
+    spec:
+      containers:
+      - name: nginx-na
+        image: nginx:latest
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: foo
+                operator: In
+                values:
+                - bar
+                - baz

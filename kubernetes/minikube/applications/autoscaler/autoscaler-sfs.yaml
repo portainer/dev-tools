@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: test
+  name: php-apache-sfs
+spec:
+  selector:
+    matchLabels:
+      run: php-apache-sfs
+  replicas: 1
+  serviceName: php-apache-headless
+  template:
+    metadata:
+      labels:
+        run: php-apache-sfs
+    spec:
+      containers:
+      - name: php-apache-sfs
+        image: k8s.gcr.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: test
+  name: php-apache-sfs
+  labels:
+    run: php-apache-sfs
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache-sfs
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: test
+  name: php-apache-sfs-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: php-apache-sfs
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50

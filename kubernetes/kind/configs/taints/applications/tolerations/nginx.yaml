@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tol
+  labels:
+    app: nginx-tol
+spec:
+  selector:
+    matchLabels:
+      app: nginx-tol
+  template:
+    metadata:
+      labels:
+        app: nginx-tol
+    spec:
+      tolerations:
+        # - key: foo # match value match effect
+        #   operator: Equal
+        #   value: bar
+        #   effect: NoExecute
+        - key: foo # exist match effect
+          operator: Exists
+          effect: NoExecute
+        # - key: azer # match value all effects
+        #   operator: Equal
+        #   value: azer
+        #   effect: ''
+        # - key: qsdf # exist all effects
+        #   operator: Exists
+        #   effect: NoSchedule
+        # - key: '' # all keys values effects
+        #   operator: Exists
+        #   effect: ''
+      containers:
+      - name: nginx-tol
+        image: nginx:latest

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tol-na
+  labels:
+    app: nginx-tol-na
+spec:
+  selector:
+    matchLabels:
+      app: nginx-tol-na
+  template:
+    metadata:
+      labels:
+        app: nginx-tol-na
+    spec:
+      containers:
+      - name: nginx-tol-na
+        image: nginx:latest
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: foo
+                operator: In
+                values:
+                - bar
+                - baz
+      tolerations:
+        - key: foo # match value match effect
+          operator: Equal
+          value: bar
+          effect: NoExecute

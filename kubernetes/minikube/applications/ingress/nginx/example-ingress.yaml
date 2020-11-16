@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-ingress
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: hello-world.info
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web
+          servicePort: 8080
+      - path: /v2
+        backend:
+          serviceName: web2
+          servicePort: 8080
+      - path: /web2
+        backend:
+          serviceName: web2
+          servicePort: 8080
+      # - path: /testhost
+      #   backend:
+      #     serviceName: test
+      #     servicePort: 80
+      # - path: /azer
+      #   backend:
+      #     serviceName: azer
+      #     servicePort: 90
+  - http:
+      paths:
+      - path: /v1
+        backend:
+          serviceName: web
+          servicePort: 8080
+      # - path: /test
+      #   backend:
+      #     serviceName: test
+      #     servicePort: 80
+      # - path: /azer
+      #   backend:
+      #     serviceName: azer
+      #     servicePort: 90

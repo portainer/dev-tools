@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tol-ns
+  labels:
+    app: nginx-tol-ns
+spec:
+  selector:
+    matchLabels:
+      app: nginx-tol-ns
+  template:
+    metadata:
+      labels:
+        app: nginx-tol-ns
+    spec:
+      containers:
+      - name: nginx-tol-ns
+        image: nginx:latest
+      nodeSelector:
+        # kubernetes.io/hostname: kind-worker2
+        hello: world
+      tolerations:
+        - key: hello # match value match effect
+          operator: Equal
+          value: world
+          effect: NoExecute

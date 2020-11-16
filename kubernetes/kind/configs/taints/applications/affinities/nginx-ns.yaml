@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ns
+  labels:
+    app: nginx-ns
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ns
+  template:
+    metadata:
+      labels:
+        app: nginx-ns
+    spec:
+      containers:
+      - name: nginx-ns
+        image: nginx:latest
+      nodeSelector:
+        # kubernetes.io/hostname: kind-worker2
+        hello: world

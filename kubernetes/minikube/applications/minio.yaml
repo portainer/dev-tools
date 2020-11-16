@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: myminio
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+  namespace: myminio
+type: Opaque
+data:
+  accesskey: bWluaW8=
+  secretkey: bWluaW8xMjM=
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfsvolume
+  namespace: myminio
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Drive3/Kubernetes
+    server: 192.168.168.123
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfsvolumeclaim
+  namespace: myminio
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: myminio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: nfsvolumeclaim
+      containers:
+      - name: minio
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1024M"
+        volumeMounts:
+        - name: data
+          mountPath: "/data"
+        image: minio/minio:RELEASE.2020-05-01T22-19-14Z
+        #image: minio/minio:RELEASE.2020-05-06T23-23-25Z 
+        #image: minio/minio:RELEASE.2020-05-08T02-40-49Z
+        #image: minio/minio:RELEASE.2020-05-16T01-33-21Z
+        args:
+        - server
+        - /data
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: secretkey
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: 9000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+  namespace: myminio
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio
