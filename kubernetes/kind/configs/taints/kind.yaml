@@ -10,7 +10,7 @@ nodes:
   - containerPort: 9000
     # hostPort will be the port to use to access portainer instance at localhost:hostPort
     hostPort: 9040
-    listenAddress: "0.0.0.0"
-    protocol: TCP
+  - containerPort: 8000
+    hostPort: 8040
 - role: worker
 - role: worker

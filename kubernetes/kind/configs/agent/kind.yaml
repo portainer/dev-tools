@@ -9,9 +9,10 @@ nodes:
   extraPortMappings:
   - containerPort: 9000
     # hostPort will be the port to use to access portainer instance at localhost:hostPort
-    hostPort: 9010
+    hostPort: 9050
   - containerPort: 8000
-    # hostPort will be the port to use to access portainer instance at localhost:hostPort
-    hostPort: 8010
+    hostPort: 8050
+  - containerPort: 30778
+    hostPort: 30778
 # uncomment to following line to have a 2 nodes cluster (1 master + 1 worker)
 # - role: worker

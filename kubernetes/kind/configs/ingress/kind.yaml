@@ -18,8 +18,8 @@ nodes:
   extraPortMappings:
   - containerPort: 9000
     hostPort: 9020
-    listenAddress: "0.0.0.0"
-    protocol: TCP
+  - containerPort: 8000
+    hostPort: 8020
   - containerPort: 80
     hostPort: 80
     protocol: TCP
