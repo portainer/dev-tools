@@ -4,9 +4,9 @@ CONTEXT="minikube"
 
 # update the dev path to match yours
 DEV_PATH="/home/baron_l/projects/pro/portainer/dist"
-# KUBERNETES_VERSION="v1.18.3"
+#KUBERNETES_VERSION="v1.18.3"
 KUBERNETES_VERSION="latest"
-DRIVER="docker"
+DRIVER="virtualbox"
 
 ip() {
   echo "Cluster running on" `minikube ip`
@@ -18,11 +18,11 @@ create() {
 }
 
 deploy() {
-  kubectl --context $CONTEXT replace --force -f ./$1.yaml
+  kubectl --context $CONTEXT replace --force -f $1
 }
 
 remove() {
-  kubectl --context $CONTEXT delete -f ./$1.yaml
+  kubectl --context $CONTEXT delete -f $1
 }
 
 delete() {
@@ -48,9 +48,7 @@ usage() {
         CONFIG the name of a file next to ./setup.sh (without extension)
 
   Examples:
-  - create cluster and deploy portainer.yaml inside it: ./setup.sh create && ./setup.sh deploy portainer
-  - redeploy portainer-agent.yaml inside cluster: ./setup.sh redeploy portainer-agent
-  - remove portainer-agent-edge.yaml of cluster: ./setup.sh remove portainer-agent-edge
+  - create cluster and deploy portainer.yaml inside it: ./setup.sh create && ./setup.sh deploy portainer.yaml
   """
 }
 
