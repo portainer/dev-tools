@@ -46,7 +46,7 @@ spec:
         - key: portainer
           operator: Equal
           value: accept
-          effect: NoSchedule
+          effect: NoExecute
       containers:
       - name: portainer
         image: portainer/base
