@@ -11,6 +11,7 @@
   * multi-master: 9030
   * taints: 9040
   * agent: 9050
+  * edge-agent: 9060
 2. Create the cluster with `./setup.sh create <ENV>` where `<ENV>` is the name of the subfolder inside `configs` folder
 3. Start Portainer in development mode via `yarn start`
 4. Deploy or force an update of any existing Portainer app: `./setup.sh portainer <ENV>`

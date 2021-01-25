@@ -3,7 +3,7 @@
 CONTEXT="minikube"
 
 # update the dev path to match yours
-DEV_PATH="/home/baron_l/projects/pro/portainer/dist"
+DEV_PATH="/home/baron_l/projects/pro/portainer/portainer/dist"
 #KUBERNETES_VERSION="v1.18.3"
 KUBERNETES_VERSION="latest"
 DRIVER="virtualbox"

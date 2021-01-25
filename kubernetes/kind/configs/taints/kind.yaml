@@ -4,13 +4,13 @@ nodes:
 - role: control-plane
   extraMounts:
     # hostPath must match the path to the dist folder of the portainer project
-  - hostPath: /home/baron_l/projects/pro/portainer/dist
+  - hostPath: /home/baron_l/projects/pro/portainer/portainer/dist
     containerPath: /portainer/app
   extraPortMappings:
   - containerPort: 9000
     # hostPort will be the port to use to access portainer instance at localhost:hostPort
     hostPort: 9040
-  - containerPort: 8000
-    hostPort: 8040
+  # - containerPort: 8000
+  #   hostPort: 8000
 - role: worker
 - role: worker

@@ -9,14 +9,10 @@ nodes:
   extraPortMappings:
   - containerPort: 9000
     # hostPort will be the port to use to access portainer instance at localhost:hostPort
-    hostPort: 9050
-  # - containerPort: 8000
-  #   hostPort: 8000
-  # port 30778 of the host (not the kind instance but host computer) is bound to edge-agent port 9001
+    hostPort: 9060
+    # port 8000 needs to be exposed in order to access the edge agent
+  - containerPort: 8000
+    hostPort: 8000
+    # port 30779 of the host (not the kind instance but host computer) is bound to edge-agent port 9001
   - containerPort: 9001
-    hostPort: 30778
-  # if we want to use a service that exposes the agent over the entire cluster
-  # we need to expose directly the port 30778 in the service
-  # so containerPort is 30778 and not 9001
-  # - containerPort: 30778
-  #   hostPort: 30778
+    hostPort: 30779
