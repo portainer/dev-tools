@@ -24,3 +24,8 @@ Open browser at `localhost:<hostPort>` (`hostPort` is defined in `kind.yaml` fil
 * kubernetes context for all the provided configs is `kind-<CONTEXT>` (e.g. `kind-base` for `base` folder, `kind-ingress` for `ingress` folder, etc)
 * You can deploy applications located inside the `applications` folder inside any kind environment with `./setup.sh deploy <CONTEXT> applications/<APP.YAML>` where `<CONTEXT>` is the application context (see above) and `<APP.YAML>` is your application yaml file inside `applications` folder
 * You don't need to recreate the cluster everytime you boot ; clusters are respawned on machine boot. You may want to redeploy Portainer everytime you do a fresh build to clear all previous deployment data.
+
+
+##### Applications
+* Enable metrics server in an environment: `./setup.sh deploy <ENV> applications/metric-server.yaml`
+* Deploy a naked pod in an environment: `./setup.sh deploy <ENV> applications/pod.yaml`
