@@ -4,14 +4,14 @@ nodes:
 - role: control-plane
   extraMounts:
     # hostPath must match the path to the dist folder of the portainer project
-  - hostPath: /home/baron_l/projects/pro/portainer/portainer/dist
+  - hostPath: _PORTAINER_PATH_/dist
     containerPath: /portainer/app
   extraPortMappings:
   - containerPort: 9000
     # hostPort will be the port to use to access portainer instance at localhost:hostPort
-    hostPort: 9050
-  # - containerPort: 8000
-  #   hostPort: 8000
+    hostPort: 9000
+  - containerPort: 8000
+    hostPort: 8000
   # port 30778 of the host (not the kind instance but host computer) is bound to edge-agent port 9001
   - containerPort: 30778
     hostPort: 30778
