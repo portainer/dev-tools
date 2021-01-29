@@ -2,6 +2,18 @@
 
 CONFIGS_PATH="./configs"
 
+#region SETUP ENV
+
+setup() {
+  PORTAINER_BASE=$1
+  for f in $(find  -name kind.yaml.template); do
+    sed "s#_PORTAINER_PATH_#$PORTAINER_BASE#g" $f > $(dirname $f)/kind.yaml;
+  done
+}
+
+#endregion
+
+
 #region CLUSTER MANAGEMENT
 create() {
   kind create cluster --config=$CONFIGS_PATH/$1/kind.yaml --name $1
@@ -40,6 +52,7 @@ usage() {
 Usage: ./setup.sh ACTION CONTEXT [CONFIG_FILE]
 
 with: - ACTION one of
+          setup
           create | delete | recreate | portainer
           deploy | redeploy | remove
           help | usage | *
@@ -47,6 +60,9 @@ with: - ACTION one of
       - CONFIG_FILE any .yaml config to deploy
 
 ACTIONS:
+  - ./setup.sh setup PORTAINER_BASE
+    * will create kind files where the base path is set to PORTAINER_BASE
+
   - ./setup.sh [ create | delete | recreate | portainer ] CONTEXT
     * create: create a new cluster defined by configs/CONTEXT/kind.yaml
     * delete: delete cluster defined by configs/CONTEXT/kind.yaml
@@ -64,7 +80,7 @@ ACTIONS:
 }
 
 case $1 in
-create | recreate | portainer | delete)
+create | recreate | portainer | delete | setup)
   if [[ $# == 2 ]]; then
     $1 $2
   else
