@@ -1,14 +1,18 @@
 #!/bin/bash
 
+# strict mode - based on http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
 CONFIGS_PATH="./configs"
 
 #region SETUP ENV
 
 setup() {
-  PORTAINER_BASE=$1
-  for f in $(find  -name kind.yaml.template); do
-    sed "s#_PORTAINER_PATH_#$PORTAINER_BASE#g" $f > $(dirname $f)/kind.yaml;
-  done
+    PORTAINER_BASE=$1
+    for f in $(find  -name kind.yaml.template); do
+        sed "s#_PORTAINER_PATH_#$PORTAINER_BASE#g" $f > "$(dirname $f)"/kind.yaml;
+    done
 }
 
 #endregion
@@ -16,39 +20,42 @@ setup() {
 
 #region CLUSTER MANAGEMENT
 create() {
-  kind create cluster --config=$CONFIGS_PATH/$1/kind.yaml --name $1
+    CONTEXT=$1
+    kind create cluster --config=$CONFIGS_PATH/$1/kind.yaml --name $CONTEXT
+    kubectl --context kind-$CONTEXT apply -f $CONFIGS_PATH/common/portainer-ns.yaml
+    kubectl --context kind-$CONTEXT apply -f $CONFIGS_PATH/common/cluster-admin.yaml
 }
 
 portainer() {
-  kubectl --context kind-$1 replace --force -f $CONFIGS_PATH/$1/portainer.yaml
+    kubectl --context kind-$1 replace --force -f $CONFIGS_PATH/$1/portainer.yaml
 }
 
 delete() {
-  kind delete clusters $1
+    kind delete clusters $1
 }
 
 recreate() {
-  delete $1
-  create $1
+    delete $1
+    create $1
 }
 #endregion
 
 #region APP MANAGEMENT
 deploy() {
-  kubectl --context kind-$1 apply -f $2
+    kubectl --context kind-$1 apply -f $2
 }
 
 redeploy() {
-  kubectl --context kind-$1 replace --force -f $2
+    kubectl --context kind-$1 replace --force -f $2
 }
 
 remove() {
-  kubectl --context kind-$1 delete --force -f $2
+    kubectl --context kind-$1 delete --force -f $2
 }
 #endregion
 
 usage() {
-  echo """
+    echo """
 Usage: ./setup.sh ACTION CONTEXT [CONFIG_FILE]
 
 with: - ACTION one of
@@ -76,25 +83,25 @@ ACTIONS:
 
   - ./setup.sh [ usage | help | * ]
     show this usage
-"""
+    """
 }
 
 case $1 in
-create | recreate | portainer | delete | setup)
-  if [[ $# == 2 ]]; then
-    $1 $2
-  else
-    usage
-  fi
-  ;;
-deploy | redeploy | remove)
-  if [[ $# == 3 ]]; then
-    $1 $2 $3
-  else
-    usage
-  fi
-  ;;
-help | usage | *)
-  usage
-  ;;
+    create | recreate | portainer | delete | setup)
+        if [[ $# == 2 ]]; then
+            $1 $2
+        else
+            usage
+        fi
+    ;;
+    deploy | redeploy | remove)
+        if [[ $# == 3 ]]; then
+            $1 $2 $3
+        else
+            usage
+        fi
+    ;;
+    help | usage | *)
+        usage
+    ;;
 esac

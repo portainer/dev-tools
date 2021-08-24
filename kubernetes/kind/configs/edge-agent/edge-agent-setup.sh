@@ -62,17 +62,11 @@ main() {
     #  info "Downloading agent manifest..."
     #  curl -L https://portainer.github.io/k8s/deploy/manifests/agent/portainer-agent-edge-k8s.yaml -o portainer-agent-edge-k8s.yaml || errorAndExit "Unable to download agent manifest"
     
-    info "Creating Portainer namespace..."
-    kubectl --context $CONTEXT create namespace portainer
-    
-    info "Creating namespace..."
-    kubectl --context $CONTEXT apply -f "$scriptDir/namespace.yaml"
-    
     info "Creating agent configuration..."
-    kubectl --context $CONTEXT create configmap portainer-agent-edge-id "--from-literal=edge.id=$1" -n portainer-edge-agent
+    kubectl --context $CONTEXT create configmap portainer-agent-edge-id "--from-literal=edge.id=$1" -n portainer
     
     info "Creating agent secret..."
-    kubectl --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$2" -n portainer-edge-agent
+    kubectl --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$2" -n portainer
     
     info "Deploying agent..."
     kubectl --context $CONTEXT apply -f "$scriptDir/agent-edge.yaml" || errorAndExit "Unable to deploy agent manifest"
