@@ -23,24 +23,24 @@ Cya="$ESeq"'0;36m';     BCya="$ESeq"'1;36m';    UCya="$ESeq"'4;36m';    ICya="$E
 Whi="$ESeq"'0;37m';     BWhi="$ESeq"'1;37m';    UWhi="$ESeq"'4;37m';    IWhi="$ESeq"'0;97m';    BIWhi="$ESeq"'1;97m';   On_Whi="$ESeq"'47m';    On_IWhi="$ESeq"'0;107m';
 
 printSection() {
-  echo -e "${BIYel}>>>> ${BIWhi}${1}${RCol}"
+    echo -e "${BIYel}>>>> ${BIWhi}${1}${RCol}"
 }
 
 info() {
-  echo -e "${BIWhi}${1}${RCol}"
+    echo -e "${BIWhi}${1}${RCol}"
 }
 
 success() {
-  echo -e "${BIGre}${1}${RCol}"
+    echo -e "${BIGre}${1}${RCol}"
 }
 
 error() {
-  echo -e "${BIRed}${1}${RCol}"
+    echo -e "${BIRed}${1}${RCol}"
 }
 
 errorAndExit() {
-  echo -e "${BIRed}${1}${RCol}"
-  exit 1
+    echo -e "${BIRed}${1}${RCol}"
+    exit 1
 }
 
 ### !COLOR OUTPUT ###
@@ -48,33 +48,31 @@ errorAndExit() {
 CONTEXT="kind-edge-agent"
 
 main() {
-  if [[ $# -ne 2 ]]; then
-    error "Not enough arguments"
-    error "Usage: ${0} <EDGE_ID> <EDGE_KEY>"
-    exit 1
-  fi
-
-  [[ "$(command -v curl)" ]] || errorAndExit "Unable to find curl binary. Please ensure curl is installed before running this script."
-  [[ "$(command -v kubectl)" ]] || errorAndExit "Unable to find kubectl binary. Please ensure kubectl is installed before running this script."
-
-#  info "Downloading agent manifest..."
-#  curl -L https://portainer.github.io/k8s/deploy/manifests/agent/portainer-agent-edge-k8s.yaml -o portainer-agent-edge-k8s.yaml || errorAndExit "Unable to download agent manifest"
-
-  info "Creating Portainer namespace..."
-  kubectl --context $CONTEXT create namespace portainer
-
-  info "Creating agent configuration..."
-  kubectl --context $CONTEXT create configmap portainer-agent-edge-id "--from-literal=edge.id=$1" -n portainer
-
-  info "Creating agent secret..."
-  kubectl --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$2" -n portainer
-
-  info "Deploying agent..."
-  scriptDir=$(dirname -- "$(readlink -f -- "$BASH_SOURCE")")
-  kubectl --context $CONTEXT apply -f $scriptDir/agent-edge.yaml || errorAndExit "Unable to deploy agent manifest"
-
-  success "Portainer Edge agent successfully deployed"
-  exit 0
+    if [[ $# -ne 2 ]]; then
+        error "Not enough arguments"
+        error "Usage: ${0} <EDGE_ID> <EDGE_KEY>"
+        exit 1
+    fi
+    
+    [[ "$(command -v curl)" ]] || errorAndExit "Unable to find curl binary. Please ensure curl is installed before running this script."
+    [[ "$(command -v kubectl)" ]] || errorAndExit "Unable to find kubectl binary. Please ensure kubectl is installed before running this script."
+    
+    scriptDir=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
+    
+    #  info "Downloading agent manifest..."
+    #  curl -L https://portainer.github.io/k8s/deploy/manifests/agent/portainer-agent-edge-k8s.yaml -o portainer-agent-edge-k8s.yaml || errorAndExit "Unable to download agent manifest"
+    
+    info "Creating agent configuration..."
+    kubectl --context $CONTEXT create configmap portainer-agent-edge-id "--from-literal=edge.id=$1" -n portainer
+    
+    info "Creating agent secret..."
+    kubectl --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$2" -n portainer
+    
+    info "Deploying agent..."
+    kubectl --context $CONTEXT apply -f "$scriptDir/agent-edge.yaml" || errorAndExit "Unable to deploy agent manifest"
+    
+    success "Portainer Edge agent successfully deployed"
+    exit 0
 }
 
 main "$@"
