@@ -86,7 +86,8 @@ ACTIONS:
     """
 }
 
-case $1 in
+command=${1:-}
+case $command in
     create | recreate | portainer | delete | setup)
         if [[ $# == 2 ]]; then
             $1 $2
