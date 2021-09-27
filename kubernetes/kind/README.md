@@ -22,6 +22,7 @@ Open browser at `localhost:<hostPort>` (`hostPort` is defined in `kind.yaml` fil
 ##### Notes
 * Multiple clusters can run at the same time, updating portainer frontend will update all running clusters (for backend you need to use step 4 to redeploy on every cluster you want)
 * `setup.sh` script provides some commands to help you recreate / redeploy / delete clusters. See them with `./setup help` or `./setup.sh usage`
+  * If you are on Windows and `./setup help` gives you `-bash: ./setup.sh: /bin/bash^M: bad interpreter: No such file or directory`, then run `sed -i -e 's/\r$//' setup.sh`. Playing around with Windows & Unix line endings sometimes makes bash wonder and refuse to run the script. 
 * kubernetes context for all the provided configs is `kind-<CONTEXT>` (e.g. `kind-base` for `base` folder, `kind-ingress` for `ingress` folder, etc)
 * You can deploy applications located inside the `applications` folder inside any kind environment with `./setup.sh deploy <CONTEXT> applications/<APP.YAML>` where `<CONTEXT>` is the application context (see above) and `<APP.YAML>` is your application yaml file inside `applications` folder
 * You don't need to recreate the cluster everytime you boot ; clusters are respawned on machine boot. You may want to redeploy Portainer everytime you do a fresh build to clear all previous deployment data.
