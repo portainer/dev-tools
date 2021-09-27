@@ -1,10 +1,9 @@
 # dev-tools
 
-## Docker
+This repo shows how to run various platforms with Portainer. Initially, we use it for testing specific kube features with different kubernetes distros and exact versions. 
 
-Coming soon...
+In this guide, we describe instructions for running:
+- [Kind](kubernetes/kind) 
+- [Minikube](kubernetes/minikube)
 
-## Kubernetes
-
-Inside `kubernetes` folder you will find tools that will help you quickly setup specific environments (single / multiple nodes clusters).
-More information about all `kubernetes` related tools can be found in the `kubernetes/README.md` file.
+Each platform is structured as folder and has corresponding README.md.
