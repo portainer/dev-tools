@@ -47,29 +47,60 @@ errorAndExit() {
 
 CONTEXT="kind-edge-agent"
 
+parseEnvVars() {
+  envs=""
+  local ENV_SOURCE=$1
+  IFS="," read -r -a env_array <<< "$ENV_SOURCE"
+  for env in "${env_array[@]}"
+  do
+    IFS="=" read -r -a env_pair <<< "$env"
+    local key="${env_pair[0]}"
+    local value="${env_pair[1]:-$(eval "echo \$$key")}"
+    envs="$envs --from-literal=$key=$value"
+  done
+  echo "$envs"
+}
+
 main() {
-    if [[ $# -ne 2 ]]; then
+    if [[ $# -lt 2 ]]; then
         error "Not enough arguments"
-        error "Usage: ${0} <EDGE_ID> <EDGE_KEY>"
+        error "Usage: ${0} <EDGE_ID> <EDGE_KEY> <EDGE_INSECURE_POLL> <EDGE_SECRET:optional>"
         exit 1
     fi
+    
+    local EDGE_ID="$1"
+    local EDGE_KEY="$2"
+    local EDGE_INSECURE_POLL="$3"
+    local EDGE_SECRET="$4"
+    local ENV_SOURCE="$5"
     
     [[ "$(command -v curl)" ]] || errorAndExit "Unable to find curl binary. Please ensure curl is installed before running this script."
     [[ "$(command -v kubectl)" ]] || errorAndExit "Unable to find kubectl binary. Please ensure kubectl is installed before running this script."
     
     scriptDir=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
-    
-    #  info "Downloading agent manifest..."
-    #  curl -L https://portainer.github.io/k8s/deploy/manifests/agent/portainer-agent-edge-k8s.yaml -o portainer-agent-edge-k8s.yaml || errorAndExit "Unable to download agent manifest"
+
+    kubectl --context $CONTEXT delete configmaps -n portainer portainer-agent-edge-id || true
+    kubectl --context $CONTEXT delete secret -n portainer portainer-agent-edge-key || true
     
     info "Creating agent configuration..."
-    kubectl --context $CONTEXT create configmap portainer-agent-edge-id "--from-literal=edge.id=$1" -n portainer
+    configmapCmd="kubectl --context $CONTEXT create configmap -n portainer portainer-agent-edge"
+    configmapCmd+=" --from-literal="EDGE_ID=$EDGE_ID""
+    configmapCmd+=" --from-literal="EDGE_INSECURE_POLL=$EDGE_INSECURE_POLL""
+    if [ -n "$EDGE_SECRET" ]; then
+        configmapCmd+=" --from-literal="EDGE_SECRET=$EDGE_SECRET""
+    fi
     
+    if [[ -n "$ENV_SOURCE" ]]; then
+        configmapCmd="$configmapCmd $(parseEnvVars "$ENV_SOURCE")"
+    fi
+    echo "$configmapCmd"
+    $configmapCmd
+
     info "Creating agent secret..."
-    kubectl --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$2" -n portainer
+    kubectl  --context $CONTEXT create secret generic portainer-agent-edge-key "--from-literal=edge.key=$EDGE_KEY" -n portainer
     
     info "Deploying agent..."
-    kubectl --context $CONTEXT apply -f "$scriptDir/agent-edge.yaml" || errorAndExit "Unable to deploy agent manifest"
+    kubectl --context $CONTEXT replace -f agent-edge.yaml --force || errorAndExit "Unable to deploy agent manifest"
     
     success "Portainer Edge agent successfully deployed"
     exit 0

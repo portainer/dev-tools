@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# strict mode - based on http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+
+curl -L  https://downloads.portainer.io/ee"$1"/portainer-agent-edge-k8s.yaml -o agent-edge.yaml || errorAndExit "Unable to download agent manifest"
+
+sed -i "s/INFO/DEBUG/g" agent-edge.yaml
+sed -i "s/image: portainer\/agent.*/image: portainerci\/agent:develop/" ./agent-edge.yaml
+sed -i '1,23d' ./agent-edge.yaml
