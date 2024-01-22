@@ -1,0 +1,23 @@
+ENV["TERM"]="linux"
+
+Vagrant.configure("2") do |config|
+  
+  # set the image for the vagrant box
+  config.vm.box = "ubuntu/noble64"
+  ## Set the image version
+  # config.vm.box_version = "15.2.31.212"
+
+  # set the static IP for the vagrant box
+  config.vm.network "private_network", ip: "192.168.99.254"
+  
+  config.vm.hostname = "microk8s-vagrant"
+  config.vm.define "microk8s-vagrant"
+
+  # consifure the parameters for VirtualBox provider
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "microk8s-vagrant"
+    vb.memory = "4096"
+    vb.cpus = 4
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+  end
+end
