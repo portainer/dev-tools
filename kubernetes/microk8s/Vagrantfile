@@ -3,7 +3,7 @@ ENV["TERM"]="linux"
 Vagrant.configure("2") do |config|
   
   # set the image for the vagrant box
-  config.vm.box = "ubuntu/noble64"
+  config.vm.box = "ubuntu/jammy64"
   ## Set the image version
   # config.vm.box_version = "15.2.31.212"
 
