@@ -1,0 +1,17 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+
+    # extractMounts map between physical (hostPath) and kind vm (containerPath)
+    extraMounts:
+      - hostPath: /home/baron_l/projects/pro/portainer/agent/dist # metal/laptop path
+        containerPath: /app # kind vm internal path
+      - hostPath: /home/baron_l/projects/pro/portainer/agent/static # metal/laptop path
+        containerPath: /static # kind vm internal path
+
+    # extraPortMappings map between physical (hostPort) and kind vm (containerPort)
+    extraPortMappings:
+      - hostPort: 9001 # hostPort will be the port to use to access portainer instance at localhost:hostPort
+        containerPort: 9001 # containerPort should match the hostPort defined at the container level in yaml file
+
