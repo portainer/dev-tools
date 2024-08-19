@@ -12,6 +12,6 @@ nodes:
 
     # extraPortMappings map between physical (hostPort) and kind vm (containerPort)
     extraPortMappings:
-      - hostPort: 9001 # hostPort will be the port to use to access portainer instance at localhost:hostPort
-        containerPort: 9001 # containerPort should match the hostPort defined at the container level in yaml file
+      - hostPort: 6061 # hostPort will be the port to use to access portainer instance at localhost:hostPort
+        containerPort: 6061 # containerPort should match the hostPort defined at the container level in yaml file
 

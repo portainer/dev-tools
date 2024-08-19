@@ -61,9 +61,9 @@ spec:
             - name: portainer-static-vol
               mountPath: /app/static # cf Dockerfile
           command: ['/app/agent'] # cf Dockerfile
-          # ports:
-          #   - containerPort: 9001 # container port (internal LISTEN ports)
-          #     hostPort: 9001 #  should match the containerPort defined in kind.yaml
+          ports:
+            - hostPort: 6061 #  should match the containerPort defined in kind.yaml
+              containerPort: 6061 # container port (internal LISTEN ports)
           env:
             - name: LOG_LEVEL
               value: DEBUG
