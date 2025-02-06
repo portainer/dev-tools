@@ -1,0 +1,12 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: core
+      password_hash: $y$j9T$I0QL6S6wHufJVFPyShadl/$FD7cmIqPdnmcNa2wNNekI4XgejTCbxRhyspmWOfclFA
+storage:
+  files:
+    - path: /etc/vconsole.conf
+      mode: 0644
+      contents:
+        inline: KEYMAP=fr

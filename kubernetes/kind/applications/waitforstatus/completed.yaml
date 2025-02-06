@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: completed-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep
+  namespace: completed-ns
+spec:
+  selector:
+    matchLabels:
+      app: dep
+  template:
+    metadata:
+      labels:
+        app: dep
+    spec:
+      containers:
+        - name: dep
+          image: busybox
+          command: ["/bin/true"]
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dset
+  namespace: completed-ns
+spec:
+  selector:
+    matchLabels:
+      app: dset
+  template:
+    metadata:
+      labels:
+        app: dset
+    spec:
+      containers:
+        - name: dset
+          image: busybox
+          command: ['/bin/true']
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sfs
+  namespace: completed-ns
+spec:
+  selector:
+    matchLabels:
+      app: sfs
+  serviceName: sfs-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sfs
+    spec:
+      containers:
+        - name: sfs
+          image: busybox
+          command: ["/bin/true"]
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod
+  namespace: completed-ns
+  labels:
+    name: pod
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: pod
+      image: busybox
+      command: ["/bin/true"]
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '500m'

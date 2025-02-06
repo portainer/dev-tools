@@ -12,23 +12,30 @@ spec:
       labels:
         run: portainer
     spec:
+      tolerations:
+        - key: 'node-role.kubernetes.io/control-plane'
+          operator: 'Equal'
+          value: ''
+          effect: 'NoSchedule'
+      nodeSelector:
+        'kubernetes.io/hostname': 'base-control-plane'
       serviceAccountName: portainer-sa-clusteradmin
       containers:
-      - name: portainer
-        image: portainer/base
-        # imagePullPolicy: "Never"
-        command: ["/app/portainer"]
-        args: ["--no-analytics",]
-        ports:
-        - containerPort: 9000
-          hostPort: 9000
-        - containerPort: 8000
-          hostPort: 8000
-        volumeMounts:
-        - mountPath: /app
-          name: portainer-dist
+        - name: portainer
+          image: portainer/base
+          # imagePullPolicy: "Never"
+          command: ['/app/portainer']
+          args: ['--no-analytics']
+          ports:
+            - containerPort: 9000
+              hostPort: 9000
+            - containerPort: 8000
+              hostPort: 8000
+          volumeMounts:
+            - mountPath: /app
+              name: portainer-dist
       volumes:
-      - name: portainer-dist
-        hostPath:
-          path: /portainer/app
-          type: Directory
+        - name: portainer-dist
+          hostPath:
+            path: /portainer/app
+            type: Directory

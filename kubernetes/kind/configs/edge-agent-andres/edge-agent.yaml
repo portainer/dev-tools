@@ -1,0 +1,89 @@
+# ---
+# # <INFO> Optional: can be added to expose the agent port 80 to associate an Edge key.
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: portainer-edge-agent
+#   namespace: portainer
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     app: portainer-edge-agent
+#   ports:
+#     - name: http
+#       protocol: TCP
+#       port: 80
+#       targetPort: 80
+---
+# <INFO> Regular service
+apiVersion: v1
+kind: Service
+metadata:
+  name: portainer-edge-agent
+  namespace: portainer
+spec:
+  clusterIP: None
+  selector:
+    app: portainer-edge-agent
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portainer-edge-agent
+  namespace: portainer
+spec:
+  selector:
+    matchLabels:
+      app: portainer-edge-agent
+  template:
+    metadata:
+      labels:
+        app: portainer-edge-agent
+    spec:
+      serviceAccountName: portainer-sa-clusteradmin
+      # bindings to retrieve kind vm (host) paths
+      volumes:
+        - name: portainer-app-vol
+          hostPath:
+            path: /app # match kind.yaml definition
+            type: Directory
+        - name: portainer-static-vol
+          hostPath:
+            path: /static # match kind.yaml definition
+            type: Directory
+      containers:
+        - name: portainer-edge-agent
+          image: portainer/base # cf Dockerfile
+          # mounts from volumes
+          volumeMounts:
+            - name: portainer-app-vol
+              mountPath: /app # cf Dockerfile
+            - name: portainer-static-vol
+              mountPath: /app/static # cf Dockerfile
+          command: ['/app/agent'] # cf Dockerfile
+          ports:
+            - hostPort: 6061 #  should match the containerPort defined in kind.yaml
+              containerPort: 6061 # container port (internal LISTEN ports)
+          env:
+            - name: LOG_LEVEL
+              value: DEBUG
+            - name: KUBERNETES_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EDGE
+              value: '1'
+            - name: EDGE_INSECURE_POLL
+              value: '1'
+            - name: AGENT_CLUSTER_ADDR
+              value: 'portainer-edge-agent'
+            - name: EDGE_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: portainer-agent-edge-id
+                  key: edge.id
+            - name: EDGE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: portainer-agent-edge-key
+                  key: edge.key

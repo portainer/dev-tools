@@ -1,0 +1,1 @@
+echo $@ | cat ./_agent_develop.sh - | vagrant ssh -c 'bash -s'

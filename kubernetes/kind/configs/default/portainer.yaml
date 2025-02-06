@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  selector:
+    matchLabels:
+      run: portainer
+  template:
+    metadata:
+      labels:
+        run: portainer
+    spec:
+      tolerations:
+        - key: 'node-role.kubernetes.io/control-plane'
+          operator: 'Exists'
+          effect: 'NoSchedule'
+      nodeSelector:
+        'kubernetes.io/hostname': 'default-control-plane'
+      serviceAccountName: portainer-sa-clusteradmin
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: portainer-data-pvc
+      containers:
+        - name: portainer
+          image: portainerci/portainer-ee:pr-364
+          imagePullPolicy: 'Always'
+          # command: ["/app/portainer"]
+          args: ['--log-level=DEBUG']
+          ports:
+            - containerPort: 9000
+              hostPort: 9000
+            - containerPort: 8000
+              hostPort: 8000
+          volumeMounts:
+            - mountPath: /data
+              name: data

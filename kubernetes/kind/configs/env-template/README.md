@@ -1,0 +1,1 @@
+This context is the base for any kind setup.

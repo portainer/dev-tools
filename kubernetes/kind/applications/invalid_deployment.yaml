@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hw
+  name: hw
+spec:
+  selector:
+    matchLabels:
+      app: hw
+  template:
+    metadata:
+      labels:
+        app: hw
+    spec:
+      containers:
+        image: hello-world

@@ -7,13 +7,15 @@ DEV_PATH="/home/baron_l/projects/pro/portainer/portainer/dist"
 #KUBERNETES_VERSION="v1.18.3"
 KUBERNETES_VERSION="latest"
 DRIVER="virtualbox"
+# must match /etc/vbox/networks.conf value
+CIDR="192.168.99.1/24"
 
 ip() {
   echo "Cluster running on" `minikube ip`
 }
 
 create() {
-  minikube start --driver=$DRIVER --mount --mount-string $DEV_PATH:/portainer/app --kubernetes-version=$KUBERNETES_VERSION
+  minikube start --driver=$DRIVER --mount --mount-string $DEV_PATH:/portainer/app --kubernetes-version=$KUBERNETES_VERSION --host-only-cidr=$CIDR
   ip
 }
 

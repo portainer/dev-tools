@@ -1,0 +1,3 @@
+portainer.container.        IN  SOA dns.portainer.container. mail.portainer.container. 2015082541 7200 3600 1209600 3600
+dns.portainer.container.    IN  A   192.168.1.20
+portainer.container.   IN  A   192.168.1.20
