@@ -1,3 +1,4 @@
 kind.yaml
 !kubernetes/kind/configs/edge-agent-andres/kind.yaml
 .vagrant
+*.log

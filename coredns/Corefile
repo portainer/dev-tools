@@ -1,0 +1,11 @@
+.:53 {
+    forward . 8.8.8.8 9.9.9.9
+    log
+    errors
+}
+
+portainer.container:53 {
+    file /root/portainer.container.db
+    log
+    errors
+}

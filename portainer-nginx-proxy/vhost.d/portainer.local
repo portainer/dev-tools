@@ -1,0 +1,2 @@
+proxy_ssl_protocols TLSv1.2;
+ssl_protocols TLSv1.2;

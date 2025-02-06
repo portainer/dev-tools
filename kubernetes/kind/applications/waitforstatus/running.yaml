@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: running-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep
+  namespace: running-ns
+spec:
+  selector:
+    matchLabels:
+      app: dep
+  template:
+    metadata:
+      labels:
+        app: dep
+    spec:
+      containers:
+        - name: dep
+          image: nginx
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sfs
+  namespace: running-ns
+spec:
+  selector:
+    matchLabels:
+      app: sfs
+  serviceName: sfs-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sfs
+    spec:
+      containers:
+        - name: sfs
+          image: nginx
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dset
+  namespace: running-ns
+spec:
+  selector:
+    matchLabels:
+      app: dset
+  template:
+    metadata:
+      labels:
+        app: dset
+    spec:
+      containers:
+        - name: dset
+          image: nginx
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod
+  namespace: running-ns
+  labels:
+    name: pod
+spec:
+  containers:
+    - name: pod
+      image: nginx
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '500m'

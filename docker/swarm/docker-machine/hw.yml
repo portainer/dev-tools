@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  hw:
+    image: hello-world
+    deploy:
+      restart_policy:
+        condition: none

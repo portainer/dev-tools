@@ -50,7 +50,14 @@ edge() {
   local CONTEXT=$1
   local EDGE_ID=$2
   local EDGE_KEY=$3
-  CONTEXT=kind-$CONTEXT ./edge-agent-setup.sh $EDGE_ID $EDGE_KEY
+  CONTEXT=$CONTEXT ./edge-agent-setup.sh $EDGE_ID $EDGE_KEY
+}
+
+load() {
+  echo $@
+  local CONTEXT=$1
+  local IMAGE=$2
+  kind load docker-image $IMAGE -n $CONTEXT
 }
 
 #endregion
@@ -183,7 +190,7 @@ setup | create | recreate | delete | reset | portainer)
     usage
   fi
   ;;
-deploy | redeploy | remove)
+deploy | redeploy | remove | load)
   if [[ $# == 2 ]]; then
     context=$1
     shift

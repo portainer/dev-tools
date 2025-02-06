@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+spec:
+  type: NodePort
+  selector:
+    name: test-nginx
+  ports:
+  - port: 80
+    nodePort: 30000

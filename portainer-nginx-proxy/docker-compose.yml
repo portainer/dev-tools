@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/home/baron_l/projects/pro/portainer/dev-tools/portainer-nginx-proxy/vhost.d:/etc/nginx/vhost.d:ro"
+      - "/home/baron_l/projects/pro/portainer/dev-tools/portainer-nginx-proxy/certs:/etc/nginx/certs"
+
+  portainer:
+    image: portainer/portainer-ce:2.14.0
+    command: -H unix:///var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=portainer.local
+      - VIRTUAL_PORT=9443
+      - VIRTUAL_PROTO=https
+    ports:
+      - 8000:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

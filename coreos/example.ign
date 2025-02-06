@@ -1,0 +1,25 @@
+{
+  "ignition": {
+    "version": "3.3.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "passwordHash": "$y$j9T$I0QL6S6wHufJVFPyShadl/$FD7cmIqPdnmcNa2wNNekI4XgejTCbxRhyspmWOfclFA"
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/vconsole.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,KEYMAP%3Dfr"
+        },
+        "mode": 420
+      }
+    ]
+  }
+}
